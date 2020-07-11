@@ -61,6 +61,7 @@ Client.on('message', message => {
         return;
     }
     let args = message.content.substring(1).split(" ");
+    let channel;
     switch (args[0]) {
         case 'init':
             connection.query(`DELETE FROM channelcheck`, console.log);
@@ -71,9 +72,10 @@ Client.on('message', message => {
             message.reply('Magyarkereső drónok fellőve!');
             break;
         case 'add':
-            let channel = args[1];
+            channel = args[1];
             if (channels.includes(channel)) {
-                let setData = `SET checkedAt = "${moment().format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
+
+                let setData = `SET checkedAt = "${moment().utcOffset('+02:00').format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
                 if (args.hasOwnProperty(2)) {
                     setData += `, names = "${args[2]}"`;
                 }
@@ -81,7 +83,17 @@ Client.on('message', message => {
                     setData += `, guild = "${args[3]}"`;
                 }
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
-                message.reply(`A [${channel}] mentve!`);
+                message.reply(`A [${channel}] channel mentve!`);
+            } else {
+                message.reply(`Ne legyél hülye, ${args[1]} channelt nem ismerem!`);
+            }
+            break;
+        case 'reset':
+            channel = args[1];
+            if (channels.includes(channel)) {
+                let setData = 'SET checkedAt = "", user =  "", names = "", guild = ""';
+                connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
+                message.reply(`A [${channel}] channel resetelve!`);
             } else {
                 message.reply(`Ne legyél hülye, ${args[1]} channelt nem ismerem!`);
             }
