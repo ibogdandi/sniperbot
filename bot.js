@@ -4,24 +4,60 @@ const moment = require('moment');
 const Discord = require('discord.js');
 const mysql = require('mysql');
 const Client = new Discord.Client();
-const connection = mysql.createConnection({
-    host: 'eu-cdbr-west-03.cleardb.net',
-    port: '3306',
-    user: 'b94ea3d24429c6',
-    password: '0c5e6325',
-    database: 'heroku_566e0c23129c7d9'
-});
+
+let connection;
 
 Client.on('ready', () => {
     console.log('I am ready!');
 });
 
-const channels = ['calpheon1', 'calpheon2', 'calpheon3'];
+const channels = [
+    'ser1',
+    'ser2',
+    'ser3',
+    'ser4',
+    'ser5',
+    'ser6',
+    'vel1',
+    'vel2',
+    'vel3',
+    'vel4',
+    'vel5',
+    'vel6',
+    'med1',
+    'med2',
+    'med3',
+    'med4',
+    'med5',
+    'med6',
+    'bal1',
+    'bal2',
+    'bal3',
+    'bal4',
+    'bal5',
+    'bal6',
+    'val1',
+    'val2',
+    'val3',
+    'val4',
+    'val5',
+    'val6',
+    'cal1',
+    'cal2',
+    'cal3',
+    'cal4',
+    'cal5',
+    'cal6',
+];
 
 Client.on('message', message => {
 
     let content = message.content;
+    if (message.author.bot) {
+        return;
+    }
     if (!content.startsWith('!')) {
+        message.delete();
         return;
     }
     let args = message.content.substring(1).split(" ");
@@ -32,12 +68,12 @@ Client.on('message', message => {
             channels.forEach(element => {
                 connection.query(`INSERT INTO channelcheck (channel) VALUES ('${element}')`, console.log);
             });
-            message.reply('clear this shit');
+            message.reply('Initializing!');
             break;
         case 'add':
             let channel = args[1];
             if (channels.includes(channel)) {
-                let setData = `SET checkedAt = "${moment().format('YYYY-MM-DD hh:mm:ss')}", user =  "${message.author.username}"`;
+                let setData = `SET checkedAt = "${moment().format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
                 if (args.hasOwnProperty(2)) {
                     setData += `, guild = "${args[2]}"`;
                 }
@@ -50,59 +86,94 @@ Client.on('message', message => {
                 message.reply(`Ne legyél hülye, ${args[1]} channelt nem ismerem`);
             }
             break;
+        case 'list':
+            // list(message.channel);
+            break;
         default:
             message.reply('Rainynek szólj mert valami nem jó!');
 
     }
-
-    sendMessage(message.channel);
-    if (message.content === 'hete') {
-        message.reply('HETE');
-    }
-
-    message.delete({timeout: 2000});
-
+    clear(message.channel);
+    list(message.channel);
 });
 
 // THIS  MUST  BE  THIS  WAY
 Client.login(process.env.BOT_TOKEN);
 
-connection.connect(error => {
-    if (error) {
-        throw error;
-    }
-    console.log('Connected to DB');
-    connection.query('SHOW TABLES', console.log);
-});
+handleDbConnection();
 
-function sendMessage(channel) {
+function list(channel) {
 
     connection.query('SELECT * FROM channelcheck', (error, rows) => {
-        let message = new Discord.MessageEmbed()
-            .setTitle('Magyarölő táblázat')
-            .setDescription('HETE');
-        message.addFields(
-            {name: 'CHANNEL', value: '\u200b', inline: true},
-            {name: 'GUILD', value: '\u200b', inline: true},
-            {name: 'CSICSKÁK', value: '\u200b', inline: true},
-        );
+        lines = '```css';
+        // lines +='😊 CHANNEL  USER ';
         rows.forEach(channelData => {
-            console.log(channelData);
             let status = '🔴';
             if (channelData.guild || channelData.names) {
-                status = '🟢';
+                status = '😍';
+                // status = '😊';
+                // let emoji = Client.emojis.cache.find(emoji => emoji.name === 'yeahBoi');
+                // status = `${emoji}`;
+                //
+                // channel.send(`${emoji}`);
+                // console.log(Client.emojis.cache);
+                // console.log(Client.emojis.cache.find(emoji => emoji.name === 'yeahBoi'));
             }
-            message.addFields(
-                {name: '\u200b', value: `${status} ${channelData.channel}`, inline: true},
-                {name: '\u200b', value: channelData.guild ?? '\u200b', inline: true},
-                {name: '\u200b', value: channelData.names ?? '\u200b', inline: true},
-            );
-            // message.addField('\u200b', '\u200b');
+
+            let line = `\n ${status} ${channelData.channel}`;
+
+            if (channelData.user) {
+                line += ` #${channelData.user}`;
+            }
+            if (channelData.checkedAt) {
+                line += ` [${moment(channelData.checkedAt).format('HH:mm')}]`;
+            }
+            if (channelData.guild) {
+                line += ` ${channelData.guild}`;
+            }
+            if (channelData.names) {
+                line += ` ${channelData.names}`;
+            }
+
+            // lines += `\n ${status} ${channelData.channel}  #${channelData.user ?? ''} [${channelData.checkedAt ? moment(channelData.checkedAt).format('HH:mm') : ''}]  ${channelData.guild ?? ''}  ${channelData.names ?? ''}`;
+            lines += line;
+
         });
-        // message.addField({
-        //     name: rows.
-        // })
-        channel.send(message);
+        lines += '```';
+        channel.send(lines);
+    });
+}
+
+function clear(channel) {
+    channel.messages.fetch({limit: 100}).then(function (list) {
+        channel.bulkDelete(list);
+    });
+}
+
+function handleDbConnection() {
+    connection = mysql.createConnection({
+        host: 'eu-cdbr-west-03.cleardb.net',
+        port: '3306',
+        user: 'b94ea3d24429c6',
+        password: '0c5e6325',
+        database: 'heroku_566e0c23129c7d9'
+    });
+    connection.connect(error => {
+        if (error) {
+            console.log('Something went wrong');
+            setTimeout(handleDbConnection, 2000);
+        } else {
+            console.log('Connected to DB');
+            connection.query('SHOW TABLES', console.log);
+        }
     });
 
+    connection.on('error', function (error) {
+        console.log('Something went wrong');
+        if (error.code === 'PROTOCOL_CONNECTION_LOST') {
+            handleDbConnection();
+        } else {
+            throw error;
+        }
+    })
 }
