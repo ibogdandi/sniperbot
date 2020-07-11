@@ -82,6 +82,9 @@ Client.on('message', message => {
                 if (args.hasOwnProperty(3)) {
                     setData += `, guild = "${args[3]}"`;
                 }
+                if (args.hasOwnProperty(4)) {
+                    setData += `, info = "${args[4]}"`;
+                }
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
                 message.reply(`A [${channel}] channel mentve!`);
             } else {
@@ -91,7 +94,7 @@ Client.on('message', message => {
         case 'reset':
             channel = args[1];
             if (channels.includes(channel)) {
-                let setData = 'SET checkedAt = NULL, user = NULL, names = NULL, guild = NULL';
+                let setData = 'SET checkedAt = NULL, user = NULL, names = NULL, guild = NULL, info = NULL';
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
                 message.reply(`A [${channel}] channel resetelve!`);
             } else {
@@ -149,8 +152,10 @@ function list(channel) {
             if (channelData.checkedAt) {
                 line += ` [${moment(channelData.checkedAt).format('HH:mm')}]`;
             }
+            if (channelData.info) {
+                line += ` ${channelData.info}]`;
+            }
 
-            // lines += `\n ${status} ${channelData.channel}  #${channelData.user ?? ''} [${channelData.checkedAt ? moment(channelData.checkedAt).format('HH:mm') : ''}]  ${channelData.guild ?? ''}  ${channelData.names ?? ''}`;
             lines += line;
 
         });
