@@ -91,7 +91,7 @@ Client.on('message', message => {
         case 'reset':
             channel = args[1];
             if (channels.includes(channel)) {
-                let setData = 'SET checkedAt = "", user =  "", names = "", guild = ""';
+                let setData = 'SET checkedAt = NULL, user = NULL, names = NULL, guild = NULL';
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
                 message.reply(`A [${channel}] channel resetelve!`);
             } else {
