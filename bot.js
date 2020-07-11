@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const moment = require('moment');
+const moment = require('moment-timezone');
 const Discord = require('discord.js');
 const mysql = require('mysql');
 const Client = new Discord.Client();
