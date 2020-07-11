@@ -122,11 +122,11 @@ function list(channel) {
 
             let line = `\n ${status} ${channelData.channel}`;
 
-            if (channelData.guild) {
-                line += ` <${channelData.guild}>`;
-            }
             if (channelData.names) {
                 line += ` ${channelData.names}`;
+            }
+            if (channelData.guild) {
+                line += ` <${channelData.guild}>`;
             }
             if (channelData.user) {
                 line += ` #${channelData.user}`;
