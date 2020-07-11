@@ -68,7 +68,7 @@ Client.on('message', message => {
             channels.forEach(element => {
                 connection.query(`INSERT INTO channelcheck (channel) VALUES ('${element}')`, console.log);
             });
-            message.reply('Initializing!');
+            message.reply('Magyarkereső drónok fellőve!');
             break;
         case 'add':
             let channel = args[1];
@@ -81,9 +81,9 @@ Client.on('message', message => {
                     setData += `, names = "${args[3]}"`;
                 }
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
-                message.reply(`A ${channel} check mentve!`);
+                message.reply(`A [${channel}] mentve!`);
             } else {
-                message.reply(`Ne legyél hülye, ${args[1]} channelt nem ismerem`);
+                message.reply(`Ne legyél hülye, ${args[1]} channelt nem ismerem!`);
             }
             break;
         case 'list':
@@ -122,17 +122,17 @@ function list(channel) {
 
             let line = `\n ${status} ${channelData.channel}`;
 
+            if (channelData.guild) {
+                line += ` <${channelData.guild}>`;
+            }
+            if (channelData.names) {
+                line += ` <${channelData.names}>`;
+            }
             if (channelData.user) {
                 line += ` #${channelData.user}`;
             }
             if (channelData.checkedAt) {
                 line += ` [${moment(channelData.checkedAt).format('HH:mm')}]`;
-            }
-            if (channelData.guild) {
-                line += ` ${channelData.guild}`;
-            }
-            if (channelData.names) {
-                line += ` ${channelData.names}`;
             }
 
             // lines += `\n ${status} ${channelData.channel}  #${channelData.user ?? ''} [${channelData.checkedAt ? moment(channelData.checkedAt).format('HH:mm') : ''}]  ${channelData.guild ?? ''}  ${channelData.names ?? ''}`;
