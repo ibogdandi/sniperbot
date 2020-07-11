@@ -75,7 +75,7 @@ Client.on('message', message => {
             channel = args[1];
             if (channels.includes(channel)) {
 
-                let setData = `SET checkedAt = "${moment().utcOffset('+02:00').format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
+                let setData = `SET checkedAt = "${moment().tz('Europe/Paris').format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
                 if (args.hasOwnProperty(2)) {
                     setData += `, names = "${args[2]}"`;
                 }
