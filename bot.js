@@ -75,10 +75,10 @@ Client.on('message', message => {
             if (channels.includes(channel)) {
                 let setData = `SET checkedAt = "${moment().format('YYYY-MM-DD HH:mm:ss')}", user =  "${message.author.username}"`;
                 if (args.hasOwnProperty(2)) {
-                    setData += `, guild = "${args[2]}"`;
+                    setData += `, names = "${args[2]}"`;
                 }
                 if (args.hasOwnProperty(3)) {
-                    setData += `, names = "${args[3]}"`;
+                    setData += `, guild = "${args[3]}"`;
                 }
                 connection.query(`UPDATE channelcheck ${setData} WHERE channel = "${channel}"`, console.log);
                 message.reply(`A [${channel}] mentve!`);
