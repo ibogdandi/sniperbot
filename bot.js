@@ -126,7 +126,7 @@ function list(channel) {
                 line += ` <${channelData.guild}>`;
             }
             if (channelData.names) {
-                line += ` <${channelData.names}>`;
+                line += ` ${channelData.names}`;
             }
             if (channelData.user) {
                 line += ` #${channelData.user}`;
