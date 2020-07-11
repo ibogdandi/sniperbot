@@ -153,7 +153,7 @@ function list(channel) {
                 line += ` [${moment(channelData.checkedAt).format('HH:mm')}]`;
             }
             if (channelData.info) {
-                line += ` ${channelData.info}]`;
+                line += ` ${channelData.info}`;
             }
 
             lines += line;
