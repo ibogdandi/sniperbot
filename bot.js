@@ -120,7 +120,10 @@ function list(channel) {
         lines = '```css';
         // lines +='😊 CHANNEL  USER ';
         rows.forEach(channelData => {
-            let status = '🔴';
+            let status = '⚪';
+            if (channelData.user) {
+                status = '🔴';
+            }
             if (channelData.guild || channelData.names) {
                 status = '😍';
                 // status = '😊';
